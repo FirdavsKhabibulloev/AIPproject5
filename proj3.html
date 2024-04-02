@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sorting Using JavaScript</title>
+    <style>
+        .list-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Comparison of Sorting Methods</h1>
+
+<form id="numberForm">
+    <label for="amountNums">Enter the amount of numbers:</label>
+    <input type="number" id="amountNums" name="amountNums" min="1" value="10">
+    <button type="button" id="generateBtn">Generate Numbers</button>
+</form>
+
+<div class="list-container">
+    <div id="randNums"><b>Randomly generated numbers:</b></div>
+</div>
+<div class="list-container">
+    <div id="selectionSort"></div>
+</div>
+<div class="list-container">
+    <div id="mergeSort"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("generateBtn").addEventListener("click", function() {
+            generateNumbers();
+        });
+
+        function generateNumbers() {
+            const amountNums = parseInt(document.getElementById("amountNums").value);
+            const rangeNums = 1000; // The range of numbers will be between 0 and 1000
+            const nums = [];
+
+            for (let i = 0; i < amountNums; i++) {
+                nums.push(Math.floor(Math.random() * rangeNums));
+            }
+
+            const randNumsElement = document.getElementById("randNums");
+            randNumsElement.innerHTML = `<b>Randomly generated numbers:</b><br>  ${nums}`;
+
+            selectionSort([...nums]);
+            displayMergeSortResults([...nums]);
+        }
+
+        function selectionSort(arr) {
+            const start = window.performance.now();
+            for (let i = 0; i < arr.length - 1; i++) {
+                let minIdx = i;
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[j] < arr[minIdx]) {
+                        minIdx = j;
+                    }
+                }
+                if (minIdx !== i) {
+                    [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+                }
+            }
+            const end = window.performance.now();
+            const elapsed = end - start;
+            const textElement = document.getElementById("selectionSort");
+            textElement.innerHTML = `<br><b>Selection sort:</b><br>  ${arr}<br>  Execution time: ${elapsed.toFixed(2)} milliseconds`;
+        }
+
+        function merge(left, right) {
+            let resultArray = [],
+                leftIndex = 0,
+                rightIndex = 0;
+
+            while (leftIndex < left.length && rightIndex < right.length) {
+                if (left[leftIndex] < right[rightIndex]) {
+                    resultArray.push(left[leftIndex]);
+                    leftIndex++;
+                } else {
+                    resultArray.push(right[rightIndex]);
+                    rightIndex++;
+                }
+            }
+
+            return resultArray.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+        }
+
+        function mergeSort(arr) {
+            if (arr.length <= 1) {
+                return arr;
+            }
+
+            const middle = Math.floor(arr.length / 2);
+            const left = arr.slice(0, middle);
+            const right = arr.slice(middle);
+
+            return merge(mergeSort(left), mergeSort(right));
+        }
+
+        function displayMergeSortResults(nums) {
+            const start = window.performance.now();
+            const sortedNums = mergeSort(nums);
+            const end = window.performance.now();
+            const elapsed = end - start;
+            const textElement = document.getElementById("mergeSort");
+            textElement.innerHTML = `<br><b>Merge sort:</b><br>  ${sortedNums}<br>  Execution time: ${elapsed.toFixed(2)} milliseconds`;
+        }
+    });
+</script>
+</body>
+</html>

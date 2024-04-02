@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 2</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="myTable">
+        <div class="row">
+            <div class="cell">First name:</div>
+            <div class="cell"><input type="text" id='fname' name="fname"></div>
+        </div>
+        <div class="row">
+            <div class="cell">Last name:</div>
+            <div class="cell"><input type="text" id='lname' name="lname"></div>
+        </div>
+        <div class="row">
+            <div class="cell">Age:</div>
+            <div class="cell">
+                <input list="agelist" id="age" name="age">
+                <datalist id="agelist">
+                    <option value="0-18"></option>
+                    <option value="18-35"></option>
+                    <option value="35-50"></option>
+                    <option value="over 50"></option>
+                </datalist>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">Sex:</div>
+            <div class="cell">
+                <input type="radio" id="male" name="sex" value="Male">
+                <label for="male"> Male </label>
+                <input type="radio" id="female" name="sex" value="Female">
+                <label for="female"> Female </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">Hobby:</div>
+            <div class="cell">
+                <input type="checkbox" id="reading" name="hobby" value="Reading">
+                <label for="art">Reading</label>
+                <input type="checkbox" id="sport" name="hobby" value="Sport">
+                <label for="sports">Sport</label>
+                <input type="checkbox" id="math" name="hobby" value="Math">
+                <label for="music">Math</label>
+                <input type="checkbox" id="modelling" name="hobby" value="Modelling">
+                <label for="eng">Modelling</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell"><button onclick="popUp()">OK</button></div>
+            <div class="cell"><button onclick="resetForm()">CANCEL</button></div>
+        </div>
+    </div>
+
+    <script>
+        function popUp() {
+            // Get the form data
+            var firstName = document.getElementById("fname").value;
+            var lastName = document.getElementById("lname").value;
+            var age = document.getElementById("age").value;
+            var sex = document.querySelector('input[name="sex"]:checked').value;
+            var hobbies = [];
+            var checkboxes = document.querySelectorAll('input[name="hobby"]:checked');
+            for (var i = 0; i < checkboxes.length; i++) {
+                hobbies.push(checkboxes[i].value);
+            }
+            var data = "First Name: " + firstName + "\n" +
+                "Last Name: " + lastName + "\n" +
+                "Age: " + age + "\n" +
+                "Sex: " + sex + "\n" +
+                "Hobbies: " + hobbies.join(", ");
+
+            // Display the data in a pop-up window
+            alert(data);
+        }
+
+        function resetForm() {
+            document.getElementById("fname").value = '';
+            document.getElementById("lname").value = '';
+            document.getElementById("age").value = '';
+            var checkboxes = document.querySelectorAll('input[name="hobby"]:checked');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+        }
+    </script>
+</body>
+</html>

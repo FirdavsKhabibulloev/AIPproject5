@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project 5</title>
+
+<!-- CSS Styling -->
+<style>
+    .proj5 #leftcolumn {
+        float: left;
+        width: 150px;
+        height: 400px;
+        border: 3px solid black;
+        padding: 5px;
+        padding-left: 8px;
+    }
+
+    .proj5 #leftcolumn a {
+        padding: 3px 1px;
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        font-weight: bold;
+        border-bottom: 1px solid gray;
+    }
+
+    .proj5 #leftcolumn a:hover {
+        background-color: #FFFF80;
+    }
+
+    .proj5 .about {
+        float: left; /* Changed to float left */
+        width: 300px; /* Increased width */
+        border: 3px solid black;
+        padding: 5px;
+        margin-left: 10px;
+        margin-bottom: 20px; /* Added margin bottom */
+    }
+
+    .proj5 #rightcolumn {
+        float: left;
+        width: 550px;
+        min-height: 400px;
+        border: 3px solid black;
+        margin-left: 10px;
+        padding: 5px;
+        padding-bottom: 8px;
+    }
+
+    * html.proj5 #rightcolumn {
+        height: 400px;
+    }
+
+    .proj5 .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .proj5 .header h1 {
+        margin-bottom: 5px;
+    }
+
+    .proj5 .header h2 {
+        margin-top: 0;
+        font-style: italic;
+    }
+</style>
+</head>
+<body class="proj5">
+
+<div class="header">
+    <h1>Advanced Internet Programming</h1>
+    <h2>Project 5 - AJAX Technology and its Applications</h2>
+</div>
+
+<!-- HTML Structure -->
+<div id="leftcolumn">
+    <a href="javascript: ajaxpage('proj1.html', 'rightcolumn');">Project 1</a>
+    <a href="javascript: ajaxpage('proj2.html', 'rightcolumn');">Project 2</a>
+    <a href="javascript: ajaxpage('proj3.html', 'rightcolumn');">Project 3</a>
+</div>
+
+<div id="rightcolumn">
+    <h3>Today's project is devoted to a mechanism for Web Site Page Managing called AJAX. AJAX is not
+        really a technology in itself, but rather an approach to using a number of existing technologies
+        together, including HTML or XHTML, CSS, JavaScript, DOM, XML, XSLT, in order to make quick,
+        incremental updates to the user interface without reloading the entire browser page.</h3>
+</div>
+
+<div class="about">
+    <h2>About</h2>
+    <p>This course covers fundamentals of HTML, JavaScript, and CSS providing learners with essential skills for web development.</p>
+</div>
+
+<div style="clear: left; margin-bottom: 1em"></div>
+
+<!-- JavaScript for AJAX functionality -->
+<script>
+    function ajaxpage(url, containerid) {
+        var page_request = false;
+        if (window.XMLHttpRequest) {
+            page_request = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            try {
+                page_request = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                try {
+                    page_request = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) {}
+            }
+        } else {
+            return false;
+        }
+        page_request.onreadystatechange = function() {
+            loadpage(page_request, containerid);
+        };
+        var bustcachevar = true; // Assuming bustcachevar is defined somewhere
+        var bustcacheparameter = '';
+        if (bustcachevar) {
+            bustcacheparameter = (url.indexOf("?") != -1) ? "&" + new Date().getTime() : "?" + new Date().getTime();
+        }
+        page_request.open('GET', url + bustcacheparameter, true);
+        page_request.send(null);
+    }
+
+    function loadpage(page_request, containerid) {
+        if (page_request.readyState == 4) {
+            if (page_request.status == 200) {
+                var container = document.getElementById(containerid);
+                container.innerHTML = page_request.responseText;
+                // Execute scripts in the loaded content
+                executeScripts(container);
+            } else {
+                console.error('Error loading page:', page_request.status);
+                // Optionally, you can display an error message or take other actions here
+            }
+        }
+    }
+
+    function executeScripts(container) {
+        // Extract script tags from the container
+        var scripts = container.getElementsByTagName('script');
+        
+        // Loop through each script and execute it
+        for (var i = 0; i < scripts.length; i++) {
+            var script = scripts[i];
+            var newScript = document.createElement('script');
+            if (script.innerHTML.includes("DOMContentLoaded")) {
+                // If script contains DOMContentLoaded, execute it after dispatching event
+                newScript.text = `
+                    ${script.innerHTML}
+                    document.dispatchEvent(new Event('DOMContentLoaded'));
+                `;
+            } else {
+                // Otherwise, execute it directly
+                newScript.text = script.text;
+            }
+            container.appendChild(newScript).parentNode.removeChild(newScript);
+        }
+    }
+</script>
+
+</body>
+</html>
+
+
+
